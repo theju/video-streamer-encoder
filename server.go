@@ -16,11 +16,11 @@ import (
 )
 
 type JSONConfig struct {
-	Host string
-	Port int
-	InputDir string
+	Host      string
+	Port      int
+	InputDir  string
 	OutputDir string
-	Widths []int
+	Widths    []int
 }
 
 func main() {
@@ -61,14 +61,14 @@ func main() {
 					found = true
 				}
 			}
-			if (found == false) {
+			if found == false {
 				rw.WriteHeader(http.StatusBadRequest)
 				rw.Write([]byte("Invalid Width"))
 				return
 			}
 			outputDir := fmt.Sprintf("%s/%d", config.OutputDir, width)
 			dirErr := os.MkdirAll(outputDir, os.ModePerm)
-			if (dirErr != nil) {
+			if dirErr != nil {
 				rw.WriteHeader(http.StatusBadRequest)
 				rw.Write([]byte("Could not create temporary directory"))
 				return
@@ -115,7 +115,7 @@ func main() {
 							break
 						}
 						select {
-						case <- ctx.Done():
+						case <-ctx.Done():
 							done = 1
 							break
 						default:
@@ -141,7 +141,7 @@ func main() {
 
 type TranscodeRet struct {
 	cmd *exec.Cmd
-	rc *io.ReadCloser
+	rc  *io.ReadCloser
 }
 
 func transcodeFile(inputFile string, width int, outputFile string) TranscodeRet {
