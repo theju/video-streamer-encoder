@@ -70,4 +70,4 @@ under the `OutputDir`.
 
 ## License
 
-MIT License. Please reference to the `LICENSE` file.
+MIT License. Please refer the `LICENSE` file.
