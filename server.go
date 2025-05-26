@@ -21,11 +21,11 @@ import (
 )
 
 type JSONConfig struct {
-	Host      string   `json:"Host"`
-	Port      int      `json:"Port"`
-	InputDir  string   `json:"InputDir"`
-	OutputDir string   `json:"OutputDir"`
-	Widths    []int    `json:"Widths"`
+	Host      string `json:"Host"`
+	Port      int    `json:"Port"`
+	InputDir  string `json:"InputDir"`
+	OutputDir string `json:"OutputDir"`
+	Widths    []int  `json:"Widths"`
 }
 
 func main() {
@@ -109,7 +109,7 @@ func handleTranscodeRequest(rw http.ResponseWriter, req *http.Request, urlRegex 
 
 	// Sanitize filename to prevent path traversal
 	filename = filepath.Clean(filename)
-	if strings.Contains(filename, "..") || path.IsAbs(filename) {
+	if strings.Contains(filename, "../") || path.IsAbs(filename) {
 		httpError(rw, http.StatusBadRequest, "Invalid file path")
 		return
 	}
@@ -221,12 +221,12 @@ func handleTranscodeRequest(rw http.ResponseWriter, req *http.Request, urlRegex 
 func transcodeFile(ctx context.Context, inputFile string, width int, outputFile string) (*TranscodeRet, error) {
 	// ffmpeg command with filters and multiple outputs
 	cmd := exec.CommandContext(ctx,
-               "ffmpeg", "-y", "-i", inputFile,
-               "-filter_complex", fmt.Sprintf("scale=%d:-2[mid];[mid]split=2[out1][out2]", width),
-               "-map", "0:a", "-c:a", "aac", "-b:a", "128k",
-               "-map", "[out1]", "-c:v", "libx265", "-b:v", "1000k", "-movflags", "+faststart", outputFile,
-               "-map", "0:a", "-c:a", "aac", "-b:a", "128k",
-               "-map", "[out2]", "-c:v", "libx265", "-b:v", "1000k", "-movflags", "isml+frag_keyframe", "-f", "ismv", "-",
+		"ffmpeg", "-y", "-i", inputFile,
+		"-filter_complex", fmt.Sprintf("scale=%d:-2[mid];[mid]split=2[out1][out2]", width),
+		"-map", "0:a", "-c:a", "aac", "-b:a", "128k",
+		"-map", "[out1]", "-c:v", "libx265", "-b:v", "1000k", "-movflags", "+faststart", outputFile,
+		"-map", "0:a", "-c:a", "aac", "-b:a", "128k",
+		"-map", "[out2]", "-c:v", "libx265", "-b:v", "1000k", "-movflags", "isml+frag_keyframe", "-f", "ismv", "-",
 	)
 
 	stdoutPipe, err := cmd.StdoutPipe()
